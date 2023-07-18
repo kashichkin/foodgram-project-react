@@ -237,7 +237,6 @@ class RecipesWriteSerializer(ModelSerializer):
     def validate(self, data):
         """Валидация ингредиентов при заполнении рецепта."""
         ingredients = data['recipe']
-        tags = data['tags']
         cooking_time = data['cooking_time']
         ingredients_list = []
         for ingredient in ingredients:
