@@ -99,7 +99,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipesReadSerializer
         return RecipesWriteSerializer
 
-    def post_delete_recipe(self, request, pk, model):
+    def add_delete_recipe(self, request, pk, model):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = self.request.user
         if request.method == 'POST':
@@ -137,14 +137,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_class=(IsAuthenticated,),
     )
     def favorite(self, request, **kwargs):
-        return self.post_delete_recipe(
+        return self.add_delete_recipe(
             request, kwargs.pop('pk'), FavoriteReceipe)
 
     @action(
         methods=['POST', 'DELETE'], detail=True,
     )
     def shopping_cart(self, request, **kwargs):
-        return self.post_delete_recipe(
+        return self.add_delete_recipe(
             request, kwargs.pop('pk'), ShoppingCart)
 
     @action(
