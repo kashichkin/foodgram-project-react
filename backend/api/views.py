@@ -118,18 +118,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 return Response(
                     serializer.data,
                     status=status.HTTP_201_CREATED)
-        if model.objects.filter( 
-            user=user, recipe=recipe 
-        ).exists(): 
-            model.objects.get( 
+        if model.objects.filter(
+            user=user, recipe=recipe
+        ).exists():
+            model.objects.get(
                 user=user, recipe=recipe
-            ).delete() 
+            ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else: 
+        else:
             return Response(
                 {'errors': 'Рецепт уже удален!'},
                 status=status.HTTP_400_BAD_REQUEST,
-            ) 
+            )
 
     @action(
         methods=['POST', 'DELETE'], detail=True,
