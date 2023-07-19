@@ -145,12 +145,9 @@ class FollowSerializer(ModelSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        query_params = request.query_params
-        queryset = Recipe.objects.filter(author=obj.author)
-        limit = query_params.get('recipes_limit', settings.RECIPES_LIMIT)
-        queryset = queryset[:int(limit)]
-        serializer = ShoppingListFavoiriteSerializer(queryset, many=True)
-        return serializer.data
+        limit = request.query_params.get('recipes_limit', settings.RECIPES_LIMIT)
+        queryset = Recipe.objects.filter(author=obj.author)[:int(limit)]
+        return ShoppingListFavoiriteSerializer(queryset, many=True).data
 
 
 class IngredientsInRecipeWriteSerializer(ModelSerializer):
@@ -295,5 +292,4 @@ class RecipesWriteSerializer(ModelSerializer):
             instance.ingredients.clear()
             self.create_update_ingredient(ingredients, instance)
             return super().update(instance, validated_data)
-        else:
-            return instance
+        return instance
