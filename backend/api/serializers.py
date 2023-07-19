@@ -145,7 +145,9 @@ class FollowSerializer(ModelSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.query_params.get('recipes_limit', settings.RECIPES_LIMIT)
+        limit = request.query_params.get(
+            'recipes_limit', settings.RECIPES_LIMIT
+        )
         queryset = Recipe.objects.filter(author=obj.author)[:int(limit)]
         return ShoppingListFavoiriteSerializer(queryset, many=True).data
 
