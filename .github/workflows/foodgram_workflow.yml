@@ -1,9 +1,6 @@
 name: Main foodgram workflow
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   tests:
@@ -83,6 +80,7 @@ jobs:
             sudo docker compose up -d --build
             sudo docker compose exec -T backend python manage.py makemigrations
             sudo docker compose exec -T backend python manage.py migrate
+            sudo docker-compose exec backend python manage.py load_ingredient_csv
             sudo docker compose exec -T backend python manage.py collectstatic --no-input
 
   send_message:
