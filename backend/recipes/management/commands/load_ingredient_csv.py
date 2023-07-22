@@ -13,15 +13,7 @@ class Command(BaseCommand):
             with open(file_name, 'r', encoding='utf-8') as file:
                 print(file)
                 file_reader = csv.reader(file, delimiter=',')
-                upload_list = []
-                for row in file_reader:
-                    name, measurement_unit = row
-                    new = Ingredient(
-                        name=name,
-                        measurement_unit=measurement_unit
-                    )
-                    if new not in upload_list:
-                        upload_list.append(new)
+                upload_list = [Ingredient(*raw) for raw in file_reader]
                 Ingredient.objects.bulk_create(upload_list)
                 self.stdout.write(
                     self.style.SUCCESS('Ингредиенты успешно загружены')
