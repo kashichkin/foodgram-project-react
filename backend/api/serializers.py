@@ -63,10 +63,6 @@ class UserSerializer(ModelSerializer):
             'is_subscribed',
         )
 
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
-
     def get_is_subscribed(self, obj):
 
         user = self.context.get('request').user
