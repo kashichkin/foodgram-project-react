@@ -11,6 +11,7 @@ from rest_framework.validators import UniqueValidator
 
 from .validators import validate_username
 
+
 class IngredientSerializer(ModelSerializer):
     """Сериализатор объектов типа Ingredients. Список ингредиентов."""
     class Meta:
