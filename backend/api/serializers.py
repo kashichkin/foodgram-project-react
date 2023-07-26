@@ -6,10 +6,6 @@ from django.conf import settings
 from recipes.models import Ingredient, IngredientInRecipesAmount, Recipe, Tag
 from users.models import Follow, User
 from .fields import Base64ImageField
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
-
-from .validators import validate_username
 
 
 class IngredientSerializer(ModelSerializer):
