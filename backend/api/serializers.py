@@ -6,7 +6,10 @@ from django.conf import settings
 from recipes.models import Ingredient, IngredientInRecipesAmount, Recipe, Tag
 from users.models import Follow, User
 from .fields import Base64ImageField
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
+from .validators import validate_username
 
 class IngredientSerializer(ModelSerializer):
     """Сериализатор объектов типа Ingredients. Список ингредиентов."""
@@ -74,12 +77,47 @@ class UserSerializer(ModelSerializer):
 
 class UserCreateSerializer(ModelSerializer):
     """Сериализатор создания объекта типа User."""
+    username = serializers.CharField(
+        required=True,
+        validators=[
+            UniqueValidator(queryset=User.objects.all()),
+            validate_username
+        ],
+    )
+    email = serializers.EmailField(
+        required=True,
+        validators=[
+            UniqueValidator(queryset=User.objects.all())
+        ],
+    )
 
     class Meta:
         model = User
         fields = (
             'id', 'email', 'username',
             'first_name', 'last_name', 'password',)
+        extra_kwargs = {
+            'username': {'required': True, 'allow_blank': False},
+            'first_name': {'required': True, 'allow_blank': False},
+            'last_name': {'required': True, 'allow_blank': False},
+            'email': {'required': True, 'allow_blank': False},
+            'password': {'required': True, 'allow_blank': False},
+        }
+
+    def validate(self, value):
+        email = value['email']
+        username = value['username']
+        if (User.objects.filter(email=email).exists()
+                and not User.objects.filter(username=username).exists()):
+            raise serializers.ValidationError(
+                'Попробуйте указать другую электронную почту.'
+            )
+        if (User.objects.filter(username=username).exists()
+                and not User.objects.filter(email=email).exists()):
+            raise serializers.ValidationError(
+                'Попробуйте указать другое имя пользователя.'
+            )
+        return value
 
 
 class ShoppingListFavoiriteSerializer(ModelSerializer):
