@@ -1,22 +1,22 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
-from .models import Follow, User
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    """Отображение и фильтр полей User в админке."""
-
-    list_display = ('id', 'username', 'first_name', 'last_name', 'email', )
-    search_fields = ('username', 'email', )
-    list_filter = ('first_name', 'email', )
-    list_display_links = ('username', )
+from recipes.models import User
+from .models import Follow
 
 
-@admin.register(Follow)
+class CustomUserAdmin(UserAdmin):
+    list_filter = (
+        'email', 'username', 'is_staff', 'is_superuser', 'is_active', 'groups'
+    )
+
+
 class FollowAdmin(admin.ModelAdmin):
-    """Отображение, фильтр, поиск полей Follow в админке."""
+    list_display = ('pk', 'user', 'following')
+    search_fields = ('user__username', 'following__username')
+    list_filter = ('user__username', 'following__username')
 
-    list_display = ('user', 'author')
-    list_filter = ('user', 'author')
-    search_fields = ('user', 'author')
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
+admin.site.register(Follow, FollowAdmin)
