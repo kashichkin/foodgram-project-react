@@ -16,7 +16,7 @@ from users.models import Follow
 
 from .filters import RecipeFilter, IngredientFilter
 from .permission import IsAuthorOrAuthenticatedOrReadOnly, IsSubscribeOnly
-from .serializers import (FavouriteRecipeSerializer, FollowSerializer, 
+from .serializers import (FavouriteRecipeSerializer, FollowSerializer,
                           IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, TagSerializer,
                           UserSerializer, RecipeReadSerializer)
@@ -79,22 +79,19 @@ class UsersViewSet(DjoserUserViewSet):
 
         if request.method == 'POST':
             serializer = FollowSerializer(
-                following, data=request.data,
-                context={'request': request},
+                following, data=request.data, context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
             Follow.objects.create(user=user, following=following)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED
-            )
+            return Response(serializer.data, status=HTTP_201_CREATED)
+
         if request.method == 'DELETE':
             serializer = FollowSerializer(
-                following, data=request.data,
-                context={'request': request},
+                following, data=request.data, context={'request': request}
             )
             serializer.is_valid(raise_exception=True)
             Follow.objects.filter(user=user, following=following).delete()
-            return Response('Успешная отписка', status=status.HTTP_204_NO_CONTENT)
+            return Response(status=HTTP_204_NO_CONTENT)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
