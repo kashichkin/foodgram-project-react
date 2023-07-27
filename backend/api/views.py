@@ -174,4 +174,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'attachment; filename="shopping_list.txt"'
         )
         response.write(shopping_list_text)
-        return response     
+        return response

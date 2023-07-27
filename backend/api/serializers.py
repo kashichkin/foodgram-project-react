@@ -78,13 +78,13 @@ class FavouriteRecipeSerializer(serializers.ModelSerializer):
 
         if self.context.get('request').method == 'POST':
             if FavoriteReceipe.objects.filter(
-                user=user, recipe=recipe).exists():
+                    user=user, recipe=recipe).exists():
                 raise ValidationError('Рецепт уже в избранном.')
             return data
 
         if self.context.get('request').method == 'DELETE':
             if FavoriteReceipe.objects.filter(
-                user=user, recipe=recipe).exists():
+                    user=user, recipe=recipe).exists():
                 return data
             raise ValidationError('Этого рецепта нет в избранном.')
 
