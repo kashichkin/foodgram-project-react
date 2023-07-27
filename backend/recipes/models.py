@@ -5,7 +5,6 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.forms import ValidationError
 
-#from users.models import User
 
 User = get_user_model()
 

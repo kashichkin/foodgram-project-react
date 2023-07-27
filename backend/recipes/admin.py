@@ -60,8 +60,9 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     """Админ панель списка покупок."""
     list_display = ('pk', 'user', 'recipe',)
     list_filter = ('user__username', 'recipe_name',)
-    search_fields = ('user__username', 'recipe__name' )
+    search_fields = ('user__username', 'recipe__name')
     empty_value_display = '-пусто-'
+
 
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(IngredientAmount, IngredientAmountAdmin)

@@ -3,10 +3,10 @@ from django.forms import ValidationError
 
 from rest_framework import serializers
 
-from recipes.models import (FavoriteReceipe, Ingredient, IngredientAmount, Recipe,
+from recipes.models import (FavoriteReceipe, Ingredient,
+                            IngredientAmount, Recipe,
                             Tag, ShoppingCart, User)
 
-from django.conf import settings
 from users.models import Follow
 from .fields import Base64ImageField
 from .utils import ingredient_amount_set
@@ -159,7 +159,7 @@ class IngredeintAmountSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount')
 
 
-class RecipesWriteSerializer(serializers.ModelSerializer):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления и изменения рецептов."""
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
     tags = serializers.PrimaryKeyRelatedField(many=True,

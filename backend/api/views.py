@@ -16,10 +16,10 @@ from users.models import Follow
 
 from .filters import RecipeFilter, IngredientFilter
 from .permission import IsAuthorOrAuthenticatedOrReadOnly, IsSubscribeOnly
-from .serializers import (FavouriteRecipeSerializer, FollowSerializer, IngredientSerializer,
-                          RecipesReadSerializer, RecipesWriteSerializer,
-                          TagSerializer, UserSerializer,
-                          RecipeReadSerializer,  RecipeWriteSerializer)
+from .serializers import (FavouriteRecipeSerializer, FollowSerializer, 
+                          IngredientSerializer, RecipeReadSerializer,
+                          RecipeWriteSerializer, TagSerializer,
+                          UserSerializer, RecipeReadSerializer)
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -113,8 +113,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Выбор сериализатора в зависимости от действия"""
 
         if self.action in ('list', 'retrieve'):
-            return RecipesReadSerializer
-        return RecipesWriteSerializer
+            return RecipeReadSerializer
+        return RecipeWriteSerializer
 
     @action(
         methods=['POST', 'DELETE'], detail=True,
