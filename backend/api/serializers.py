@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, following=following).exists()
-    
+
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализация объектов типа Tags. Список тегов."""
@@ -77,15 +77,17 @@ class FavouriteRecipeSerializer(serializers.ModelSerializer):
         """Валидация добавления и удаления из избранного."""
 
         if self.context.get('request').method == 'POST':
-            if FavoriteReceipe.objects.filter(user=user, recipe=recipe).exists():
+            if FavoriteReceipe.objects.filter(
+                user=user, recipe=recipe).exists():
                 raise ValidationError('Рецепт уже в избранном.')
             return data
 
         if self.context.get('request').method == 'DELETE':
-            if FavoriteReceipe.objects.filter(user=user, recipe=recipe).exists():
+            if FavoriteReceipe.objects.filter(
+                user=user, recipe=recipe).exists():
                 return data
             raise ValidationError('Этого рецепта нет в избранном.')
-        
+
     def validate_shopping_cart(self, data, user, recipe):
         """Валидация добавления и удаления в список покупок."""
 
@@ -139,7 +141,8 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         user = self.context('request').user
         if user.is_anonymous:
             return False
-        return FavoriteReceipe.objects.filter(user=user, recipe=recipe).exists()
+        return FavoriteReceipe.objects.filter(
+            user=user, recipe=recipe).exists()
 
     def get_is_in_shopping_cart(self, recipe):
         """Определяет есть ли данный рецепт в списке покупок у пользователя."""
@@ -193,7 +196,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         if len(used_ingredients) != len(data):
             raise ValidationError('Ингредиенты повторяются.')
         return data
-    
+
     def validate_tags(self, data):
         """Валидация тегов."""
         tags_count = Tag.objects.count()
