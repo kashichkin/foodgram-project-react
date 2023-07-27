@@ -1,44 +1,44 @@
-from django_filters import rest_framework
-
-from rest_framework import filters
-
-from .views import Recipe, Tag, User
+from django_filters.rest_framework import FilterSet, filters
+from rest_framework.filters import SearchFilter
+from recipes.models import Recipe, Tag
 
 
-class RecipeFilter(rest_framework.FilterSet):
-    """Фильтр для рецептов."""
-    author = rest_framework.ModelChoiceFilter(queryset=User.objects.all())
-    tags = rest_framework.ModelMultipleChoiceFilter(
+class RecipeFilter(FilterSet):
+    """Класс для фильтрации обьектов Recipes."""
+
+    tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
         to_field_name='slug',
-        queryset=Tag.objects.all()
+        queryset=Tag.objects.all(),
     )
-    is_favorited = rest_framework.BooleanFilter(
-        method='is_favorited_method')
-    is_in_shopping_cart = rest_framework.BooleanFilter(
-        method='is_in_shopping_cart_method')
-
-    def is_favorited_method(self, queryset, name, value):
-        """Возвращает рецепты авторов, на которых подписан пользователь
-            или все рецепты в зависимости от запроса."""
-        if value:
-            queryset = queryset.filter(favourite__user=self.request.user)
-        return queryset
-
-    def is_in_shopping_cart_method(self, queryset, name, value):
-        """Возвращает рецепты, которые внесены в список покупок
-            или все рецепты в зависимости от запроса."""
-        if value:
-            queryset = queryset.filter(
-                in_shopping_cart__user=self.request.user
-            )
-        return queryset
+    is_favorited = filters.BooleanFilter(method='is_favorited_filter')
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='is_in_shopping_cart_filter'
+    )
 
     class Meta:
         model = Recipe
-        fields = ['author', 'tags']
+        fields = (
+            'tags',
+            'author',
+            'is_favorited',
+            'is_in_shopping_cart',
+        )
+
+    def is_favorited_filter(self, queryset, name, data):
+        user = self.request.user
+        if data and user.is_authenticated:
+            return queryset.filter(favorite_recipes__user=user)
+        return queryset
+
+    def is_in_shopping_cart_filter(self, queryset, name, data):
+        user = self.request.user
+        if data and user.is_authenticated:
+            return queryset.filter(shopping_recipes__user=user)
+        return queryset
 
 
-class IngredientFilter(filters.SearchFilter):
-    """Меняет старнартный парметр поиска 'search' на 'name'."""
+class IngredientFilter(SearchFilter):
+    """Класс для фильтрации обьектов Tags."""
+
     search_param = 'name'

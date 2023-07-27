@@ -1,14 +1,20 @@
-from django.shortcuts import get_object_or_404
-
-from recipes.models import Ingredient, IngredientAmount
+from django.shortcuts import HttpResponse
 
 
-def ingredient_amount_set(recipe, ingredients_data):
-    """Создает связи рецепта с количеством ингредиента."""
-    for ingredient_data in ingredients_data:
-        id = ingredient_data.get('id')
-        ingredient_id = get_object_or_404(Ingredient, id=id)
-        amount = ingredient_data.get('amount')
-        IngredientAmount.objects.create(
-            recipe=recipe, ingredient=ingredient_id, amount=amount
+def shopping_cart_file(ingredients):
+    """Загрузка списка покупок с ингредиентами."""
+
+    shopping_list = 'Список покупок: \n'
+    for ingredient in ingredients:
+        shopping_list += (
+            f'{ingredient["ingredient__name"]} - '
+            f'{ingredient["amount_sum"]} '
+            f'({ingredient["ingredient__measurement_unit"]}) \n'
         )
+        response = HttpResponse(
+            shopping_list, content_type='text/plain; charset=utf8'
+        )
+        response[
+            'Content-Disposition'
+        ] = 'attachment; filename="shopping_cart.txt"'
+    return response
